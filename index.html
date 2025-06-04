@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Eid Mubarak Greeting</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem;
+      text-align: center;
+      min-height: 100vh;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 1rem;
+      margin-top: 1rem;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    }
+    .custom-greeting {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 0 0 10px #fffa;
+      margin-top: 1.2rem;
+      animation: fadeIn 1.2s ease-in;
+    }
+    input[type="text"] {
+      padding: 0.7rem;
+      margin-top: 1rem;
+      border-radius: 999px;
+      border: 2px solid #fff;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      outline: none;
+      width: 90%;
+      max-width: 400px;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.8rem 1.5rem;
+      border-radius: 999px;
+      font-size: 1rem;
+      background: transparent;
+      border: 2px solid #fff;
+      color: white;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .message {
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      color: #fff9;
+      animation: fadeIn 1.5s ease-in;
+    }
+    .whatsapp-btn {
+      background: #25D366;
+      color: white;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-weight: bold;
+    }
+    .whatsapp-btn i {
+      font-style: normal;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <img src="eid.gif" alt="Eid Greeting GIF" />
+
+  <!-- Custom greeting from URL name -->
+  <div class="custom-greeting" id="fromMessage" style="display:none;"></div>
+
+  <!-- Name input -->
+  <input type="text" id="nameInput" placeholder="Enter your name" />
+
+  <!-- Generate button -->
+  <button onclick="generateWish()">🎉 Generate Eid Wish</button>
+
+  <!-- Resulted greeting message -->
+  <div class="message" id="wishMessage"></div>
+
+  <!-- WhatsApp share -->
+  <button class="whatsapp-btn" id="whatsappBtn" style="display: none;" onclick="shareWhatsApp()">
+    <i>📲</i> Share on WhatsApp
+  </button>
+
+  <!-- Background music -->
+  <audio id="bgMusic" src="song.mp3" autoplay loop hidden></audio>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromName = urlParams.get('from');
+
+    const fromMessageBox = document.getElementById("fromMessage");
+    const audio = document.getElementById("bgMusic");
+
+    document.addEventListener("DOMContentLoaded", () => {
+      audio.play().catch(() => {
+        document.body.addEventListener("click", () => {
+          audio.play();
+        }, { once: true });
+      });
+    });
+
+    if (fromName) {
+      fromMessageBox.style.display = 'block';
+      fromMessageBox.innerHTML = `🌙 Eid Mubarak from <strong>${decodeURIComponent(fromName)}</strong>! Wishing you joy and blessings!`;
+    }
+
+    function generateWish() {
+      const name = document.getElementById("nameInput").value.trim();
+      const messageBox = document.getElementById("wishMessage");
+      const whatsappBtn = document.getElementById("whatsappBtn");
+
+      if (name === "") {
+        messageBox.innerHTML = "Please enter your name.";
+        whatsappBtn.style.display = "none";
+        return;
+      }
+
+      const message = `Eid Mubarak from ${name}! 🎉 Wishing you happiness and blessings!`;
+      messageBox.innerHTML = message;
+      whatsappBtn.style.display = "inline-flex";
+      whatsappBtn.setAttribute("data-message", message);
+      whatsappBtn.setAttribute("data-name", name);
+    }
+
+    function shareWhatsApp() {
+      const message = document.getElementById("whatsappBtn").getAttribute("data-message");
+      const name = document.getElementById("whatsappBtn").getAttribute("data-name");
+      const link = `${window.location.origin}${window.location.pathname}?from=${encodeURIComponent(name)}`;
+      const fullMessage = `${message} 🌙\n${link}`;
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(fullMessage)}`;
+      window.open(whatsappUrl, '_blank');
+    }
+  </script>
+</body>
+</html>
